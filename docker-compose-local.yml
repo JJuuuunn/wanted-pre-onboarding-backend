@@ -1,0 +1,17 @@
+version: "3"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    build:
+      dockerfile: Dockerfile
+      context: ./database
+    environment:
+      - MYSQL_DATABASE=wanted
+      - MYSQL_ROOT_PASSWORD=1234
+      - TZ=Asia/Seoul
+    volumes:
+      - ./database/config:/etc/mysql/conf.d
+      - ./database/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
