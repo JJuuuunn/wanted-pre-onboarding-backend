@@ -10,13 +10,17 @@ import com.wanted.backend.exception.WantedException;
 import com.wanted.backend.repository.MemberRepository;
 import com.wanted.backend.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -26,24 +30,30 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void write(PostWriteRequest request, String email) {
+    public PostResponse write(PostWriteRequest request, String email) {
         Optional<Member> optionalMember = memberRepository.findMemberByEmail(email);
         if (optionalMember.isEmpty()) {
             throw new WantedException(ErrorCode.MEMBER_NOT_FOUND);
         }
         Member member = optionalMember.get();
 
-        postRepository.save(Post.builder()
+        Post post = Post.builder()
                 .title(request.getTitle())
                 .contents(request.getContents())
                 .member(member)
-                .build()
-        );
+                .build();
+
+        postRepository.save(post);
+
+        return PostResponse.from(post);
     }
 
     @Override
-    public Page<Post> list(Pageable pageable) {
-        return postRepository.findAll(pageable);
+    public Page<PostResponse> list(Pageable pageable) {
+
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        return posts.map(PostResponse::from);
     }
 
     @Override
@@ -70,7 +80,10 @@ public class PostServiceImpl implements PostService {
             throw new WantedException(ErrorCode.DIFFERENT_MEMBER);
         }
 
-        post.modify(request.getContent());
+        log.info(request.getTitle());
+        log.info(request.getContents());
+
+        post.modify(request);
 
         return PostResponse.from(post);
     }

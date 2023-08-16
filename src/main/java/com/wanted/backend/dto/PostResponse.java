@@ -3,9 +3,9 @@ package com.wanted.backend.dto;
 
 import com.wanted.backend.entity.Post;
 import lombok.Builder;
+import lombok.Getter;
 
-import java.util.Optional;
-
+@Getter
 public class PostResponse {
     private String title;
     private String contents;

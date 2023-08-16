@@ -1,6 +1,7 @@
 package com.wanted.backend.controller;
 
 import com.wanted.backend.dto.MemberJoinRequest;
+import com.wanted.backend.dto.MemberJoinResponse;
 import com.wanted.backend.dto.MemberLoginRequest;
 import com.wanted.backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +21,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/join")
-    public ResponseEntity<String> join(@RequestBody @Valid MemberJoinRequest request) {
+    public ResponseEntity<MemberJoinResponse> join(@RequestBody @Valid MemberJoinRequest request) {
 
-        memberService.Join(request);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(memberService.Join(request));
     }
     
     @PostMapping("/login")

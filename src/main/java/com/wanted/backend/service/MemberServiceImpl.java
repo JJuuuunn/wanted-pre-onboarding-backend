@@ -1,6 +1,7 @@
 package com.wanted.backend.service;
 
 import com.wanted.backend.dto.MemberJoinRequest;
+import com.wanted.backend.dto.MemberJoinResponse;
 import com.wanted.backend.dto.MemberLoginRequest;
 import com.wanted.backend.entity.Member;
 import com.wanted.backend.exception.ErrorCode;
@@ -23,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void Join(MemberJoinRequest request) {
+    public MemberJoinResponse Join(MemberJoinRequest request) {
         Optional<Member> optionalMember = memberRepository.findMemberByEmail(request.getEmail());
         if (optionalMember.isPresent()) {
             throw new WantedException(ErrorCode.SAME_EMAIL_EXISTS);
@@ -35,6 +36,8 @@ public class MemberServiceImpl implements MemberService {
                 .build();
 
         memberRepository.save(member);
+
+        return MemberJoinResponse.from(member);
     }
 
     @Override
@@ -51,6 +54,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         String jwtToken = jwtUtil.createJwtToken(member.getEmail());
+        
         return jwtToken;
     }
 }

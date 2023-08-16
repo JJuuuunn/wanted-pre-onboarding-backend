@@ -21,19 +21,17 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/write")
-    public ResponseEntity<String> join(@RequestBody PostWriteRequest request) {
+    public ResponseEntity<PostResponse> write(@RequestBody PostWriteRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.badRequest().build();
         }
 
-        postService.write(request, authentication.getName());
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(postService.write(request, authentication.getName()));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<Page<Post>> list(Pageable pageable) {
+    public ResponseEntity<Page<PostResponse>> list(Pageable pageable) {
         return ResponseEntity.ok().body(postService.list(pageable));
     }
 
@@ -63,6 +61,6 @@ public class PostController {
 
         postService.delete(id, email);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("삭제 성공");
     }
 }
