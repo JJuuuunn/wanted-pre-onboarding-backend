@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class WantedException  extends RuntimeException {
-    private final ErrorCode errorCode;
-    private final String errorMessage;
+    private ErrorCode errorCode;
+    private String errorMessage;
 
     public WantedException(ErrorCode errorCode) {
         super(errorCode.getDescription());
