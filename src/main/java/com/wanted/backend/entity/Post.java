@@ -1,6 +1,8 @@
 package com.wanted.backend.entity;
 
 import javax.persistence.*;
+
+import com.wanted.backend.dto.PostModifyRequest;
 import lombok.*;
 
 import static javax.persistence.FetchType.LAZY;
@@ -28,7 +30,8 @@ public class Post {
         this.member = member;
     }
 
-    public void modify(String contents) {
-        this.contents = contents;
+    public void modify(PostModifyRequest request) {
+        this.title = (request.getTitle().isEmpty() || request.getTitle() == null) ? title : request.getTitle();
+        this.contents = (request.getContents().isEmpty() || request.getContents() == null) ? title : request.getContents();
     }
 }
